@@ -1,0 +1,22 @@
+name: Build and Test
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+  merge_group:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Build Docker image with dependencies
+        run: |
+          docker build -t build-deps -f .github/workflows/Dockerfile .
+      - name: Run build and tests
+        run: |
+          docker run --rm -v $PWD:/workspace -w /workspace build-deps
